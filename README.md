@@ -158,7 +158,7 @@ Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for details on our code o
 * **Nayan Deshpande** - *Initial work*
 * **Viji Daniel John Thankachan** - *Initial work* 
 
-See also the list of [contributors](https://github.com/HARMAN-Automotive/device-client/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/eclipse-ecsp/device-client/graphs/contributors) who participated in this project.
 
 
 ## Security Contact Information
@@ -175,8 +175,8 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE](./LICE
 
 
 ## Announcements
-All updates to this component are present in our [releases page](https://github.com/HARMAN-Automotive/device-client/releases).
-For the versions available, see the [tags on this repository](https://github.com/HARMAN-Automotive/device-client/tags)..
+All updates to this component are present in our [releases page](https://github.com/eclipse-ecsp/device-client/releases).
+For the versions available, see the [tags on this repository](https://github.com/eclipse-ecsp/device-client/tags)..
 
 ## Acknowledgments
 TODO

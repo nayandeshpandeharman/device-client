@@ -5,7 +5,7 @@ changelog:
     labels:
       - ignore-for-release
     authors:
-      - HARMAN-Automotive
+      - eclipse-ecsp
   categories:
     - title: Breaking Changes
       labels:
