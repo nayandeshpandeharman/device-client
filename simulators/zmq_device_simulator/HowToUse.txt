@@ -1,0 +1,116 @@
+zmq_device_simulator is a simulator application which can be used for the following purposes.
+-as a server application which can continuously listen to the messages coming over the zmq channel
+-as a client application which can send a message over the zmq channel
+
+The zmq channel used to send the message is "ipc:///tmp/ipcd_notif.ipc"
+The zmq channel used to listen to incoming message is "ipc:///tmp/ipcd_remote.ipc"
+
+Usage options:
+a. zmq_device_simulator C <message to send>
+	This will send the given message over the channel "ipc:///tmp/ipcd_notif.ipc"
+
+b. zmq_device_simulator S
+	This will run as a server in a continuous loop i.e. it will keep listening for any incoming messages and will just print it on the console.
+
+c.	zmq_device_simulator S ROS
+	This will run as a server in a continuous loop. However, if any RO command/msg is received, this will simulate a SUCCESS response and send it over the channel "ipc:///tmp/ipcd_notif.ipc"
+
+d.	zmq_device_simulator S ROF
+	This will run as a server in a continuous loop. However, if any RO command/msg is received, this will simulate a FAILURE response and send it over the channel "ipc:///tmp/ipcd_notif.ipc"
+
+
+Examples:
+-------------------------------------------------------------------------------
+1) Running zmq_device_simulator as client
+$ ./zmq_device_simulator C "{\"BizTransactionId\":\"SampleID123\",\"CorrelationId\":\"240624\",\"Data\":{\"response\":\"SUCCESS\",\"roRequestId\":\"SampleID123\",\"topic\":\"/2c/ro\"},\"EventID\":\"RemoteOperationResponse\",\"MessageId\":876345,\"Timestamp\":1721447906181,\"Timezone\":330,\"Version\":\"1.1\"}"
+
+ zmq_device_simulator : version 3.0.5
+Connecting to ipc:///tmp/ipcd_notif.ipc...
+Msg is sent.
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+2) Running zmq_device_simulator as server and RO command is received
+$ ./zmq_device_simulator S
+
+ zmq_device_simulator : version 3.0.5
+Binding with the url ipc:///tmp/ipcd_remote.ipc...
+Start listening...(to quit, send "quit" message)
+Received: {"BizTransactionId":"SampleID123","Data":{"duration":8,"origin":"Cloud","roRequestId":"SampleID123","state":"STARTED","topic":"/2c/ro","userId":"Sample@sample.com","vehicleArchType":"hu"},"EventID":"RemoteOperationEngine","MessageId":"240624","Timestamp":1716792534562,"Timezone":0,"UserContext":[{"role":"VO","userId":"Sample@sample.com"}],"Version":"1.1"}
+
+ ************************************************ 
+
+ *** RO COMMAND RECEIVED *** : RemoteOperationEngine
+
+ ======= RESPONSE FOR SUCCESS =======
+
+./zmq_device_simulator C "{\"BizTransactionId\":\"SampleID123\",\"CorrelationId\":\"240624\",\"Data\":{\"response\":\"SUCCESS\",\"roRequestId\":\"SampleID123\",\"topic\":\"/2c/ro\"},\"EventID\":\"RemoteOperationResponse\",\"MessageId\":876345,\"Timestamp\":1721447906181,\"Timezone\":330,\"Version\":\"1.1\"}"
+
+
+ ======= RESPONSE FOR FAIL =======
+
+./zmq_device_simulator C "{\"BizTransactionId\":\"SampleID123\",\"CorrelationId\":\"240624\",\"Data\":{\"response\":\"FAIL\",\"roRequestId\":\"SampleID123\",\"topic\":\"/2c/ro\"},\"EventID\":\"RemoteOperationResponse\",\"MessageId\":876345,\"Timestamp\":1721447906181,\"Timezone\":330,\"Version\":\"1.1\"}"
+
+
+ ======= RESPONSE FOR CUSTOM =======
+
+./zmq_device_simulator C "{\"BizTransactionId\":\"SampleID123\",\"CorrelationId\":\"240624\",\"Data\":{\"response\":\"CUSTOM\",\"roRequestId\":\"SampleID123\",\"topic\":\"/2c/ro\"},\"EventID\":\"RemoteOperationResponse\",\"MessageId\":876345,\"Timestamp\":1721447906181,\"Timezone\":330,\"Version\":\"1.1\"}"
+
+
+
+ ************************************************ 
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+3) Running zmq_device_simulator as server with auto respond to RO commands as success.
+$ ./zmq_device_simulator S ROS
+
+ zmq_device_simulator : version 3.0.5
+Binding with the url ipc:///tmp/ipcd_remote.ipc...
+Start listening...(to quit, send "quit" message)
+Received: {"BizTransactionId":"SampleID123","Data":{"duration":8,"origin":"Cloud","roRequestId":"SampleID123","state":"STARTED","topic":"/2c/ro","userId":"Sample@sample.com","vehicleArchType":"hu"},"EventID":"RemoteOperationEngine","MessageId":"240624","Timestamp":1716792534562,"Timezone":0,"UserContext":[{"role":"VO","userId":"Sample@sample.com"}],"Version":"1.1"}
+
+ ************************************************ 
+
+ *** RO COMMAND RECEIVED *** : RemoteOperationEngine
+
+Auto sending RO SUCCESS response 
+
+ ======= RESPONSE FOR SUCCESS =======
+
+"{\"BizTransactionId\":\"SampleID123\",\"CorrelationId\":\"240624\",\"Data\":{\"response\":\"SUCCESS\",\"roRequestId\":\"SampleID123\",\"topic\":\"/2c/ro\"},\"EventID\":\"RemoteOperationResponse\",\"MessageId\":876345,\"Timestamp\":1721447772808,\"Timezone\":330,\"Version\":\"1.1\"}"
+
+
+Sending RO response 
+Connecting to ipc:///tmp/ipcd_notif.ipc...
+Msg is sent.
+
+ ************************************************ 
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+4) Running zmq_device_simulator as server with auto respond to RO commands as fail. 
+$ ./zmq_device_simulator S ROF
+
+ zmq_device_simulator : version 3.0.5
+Binding with the url ipc:///tmp/ipcd_remote.ipc...
+Start listening...(to quit, send "quit" message)
+Received: {"BizTransactionId":"SampleID123","Data":{"duration":8,"origin":"Cloud","roRequestId":"SampleID123","state":"STARTED","topic":"/2c/ro","userId":"Sample@sample.com","vehicleArchType":"hu"},"EventID":"RemoteOperationEngine","MessageId":"240624","Timestamp":1716792534562,"Timezone":0,"UserContext":[{"role":"VO","userId":"Sample@sample.com"}],"Version":"1.1"}
+
+ ************************************************ 
+
+ *** RO COMMAND RECEIVED *** : RemoteOperationEngine
+
+Auto sending RO FAIL response 
+
+ ======= RESPONSE FOR FAIL =======
+
+"{\"BizTransactionId\":\"SampleID123\",\"CorrelationId\":\"240624\",\"Data\":{\"response\":\"FAIL\",\"roRequestId\":\"SampleID123\",\"topic\":\"/2c/ro\"},\"EventID\":\"RemoteOperationResponse\",\"MessageId\":876345,\"Timestamp\":1721447727814,\"Timezone\":330,\"Version\":\"1.1\"}"
+
+
+Sending RO response 
+Connecting to ipc:///tmp/ipcd_notif.ipc...
+Msg is sent.
+
+ ************************************************ 
+ -------------------------------------------------------------------------------

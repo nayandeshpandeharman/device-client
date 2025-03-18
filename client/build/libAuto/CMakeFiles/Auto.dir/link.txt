@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../lib/libAuto.a CMakeFiles/Auto.dir/src/analytics/CAnalyticsMessageHandler.cpp.o CMakeFiles/Auto.dir/src/analytics/CRemoteService.cpp.o
+/usr/bin/ranlib ../lib/libAuto.a

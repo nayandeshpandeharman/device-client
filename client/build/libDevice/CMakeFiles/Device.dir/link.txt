@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../lib/libDevice.a CMakeFiles/Device.dir/src/CClientMessageDispatcherImpl.cpp.o CMakeFiles/Device.dir/src/CCpuLoad.cpp.o CMakeFiles/Device.dir/src/CDefaultProductImpl.cpp.o CMakeFiles/Device.dir/src/CDeviceCommandHandlerImpl.cpp.o CMakeFiles/Device.dir/src/CDeviceInfo.cpp.o CMakeFiles/Device.dir/src/CZMQClient.cpp.o CMakeFiles/Device.dir/src/CZMQDeviceMessageSenderImpl.cpp.o CMakeFiles/Device.dir/src/CZMQReceiveMessage.cpp.o
+/usr/bin/ranlib ../lib/libDevice.a
