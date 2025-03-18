@@ -1,0 +1,68 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v4
+    # Following are the pre-requisite libraries for device-client to build.
+    # If not already installed, below listed software components need to be installed
+    #  [cmake] sudo apt install cmake
+    #  [zlib] sudo apt install zlib1g-dev
+    #  [sqlite] sudo apt-get install libsqlite3-dev
+    #  [curl] sudo apt-get install libcurl4-openssl-dev
+    #  [ssl] sudo apt-get install libssl1.0-dev
+    #  [crypto] sudo apt-get install libcrypto++-dev
+    #  [zmq] sudo apt-get install libzmq3-dev
+    - name: make
+      run: |
+        # Out of the above mentioned pre-requisite components , below components-
+        # - are not found in the ubuntu mentioned in "runs-on", so they are being - 
+        # - installed.
+        sudo apt-get update
+        sudo apt-get install libcurl4-openssl-dev
+        sudo apt-get install libzmq3-dev
+        cd client
+        mkdir build
+        cd build
+        cmake ..
+        make
+
+        # create temporary artifacts directory
+        pwd
+        mkdir afacts
+        
+        # copy the build artifacts to the afacts directory
+        cp bin/deviceclient afacts/
+        cp lib/libEvent.so afacts/
+        cp ../../assets/cacert.pem afacts/
+        cp ../../assets/server-cert.pem afacts/
+        cp ../../assets/os-sandbox.conf afacts/
+
+        cd ../../simulators/zmq_device_simulator
+        pwd
+        mkdir build
+        cd build
+        cmake ..
+        make
+        cp zmq_device_simulator ../../../client/build/afacts/
+
+    # copy the build artifacts to artifacts location
+    - uses: actions/upload-artifact@v4
+      with:
+        name: deviceclient
+        path: /home/runner/work/device-client/device-client/client/build/afacts
+
+     
+    #- name: make check
+    #  run: make check
+   # - name: make distcheck
+   #   run: make distcheck

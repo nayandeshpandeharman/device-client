@@ -1,0 +1,68 @@
+name: Unit Test Code coverage
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v4
+    # Following are the pre-requisite libraries for device-client to build.
+    # If not already installed, below listed software components need to be installed
+    #  [cmake] sudo apt install cmake
+    #  [zlib] sudo apt install zlib1g-dev
+    #  [sqlite] sudo apt-get install libsqlite3-dev
+    #  [curl] sudo apt-get install libcurl4-openssl-dev
+    #  [ssl] sudo apt-get install libssl1.0-dev
+    #  [crypto] sudo apt-get install libcrypto++-dev
+    #  [zmq] sudo apt-get install libzmq3-dev
+    - name: make
+      run: |
+        # Out of the above mentioned pre-requisite components , below components-
+        # - are not found in the ubuntu mentioned in "runs-on", so they are being - 
+        # - installed.
+        sudo apt-get update
+        sudo apt-get install libcurl4-openssl-dev
+        sudo apt-get install libzmq3-dev
+        sudo apt-get install lcov
+        cd client
+        mkdir build
+        cd build
+        cmake -DIC_UNIT_TEST=1 -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage -fPIC -O0" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs -ftest-coverage" ..
+        make
+        cd bin/
+        rm -rf ../../Reports
+        export GTEST_OUTPUT="xml:./Unit_Test_Report.xml"
+        ./deviceclient -c ../../../assets/os-sandbox.conf
+        cp Unit_Test_Report.xml ../../Reports/
+        lcov --capture --directory ../../build/ --output-file total_coverage.info
+        lcov --remove total_coverage.info '/usr/include/*' '/usr/lib/*' '*/googletest/*' '*/unittest/*' '*/js/*.c' '*/jsoncpp/json.h' '*/src/jsoncpp.cpp' '*/libmosquitto/*' -o filtered_coverage.info
+        genhtml filtered_coverage.info --output-directory ../../Reports/coverage
+        cd ../../Reports
+        tar -zcvf coverage.tar coverage
+
+        # create temporary artifacts directory
+        pwd
+        mkdir afacts
+        
+        # copy the build artifacts to the afacts directory
+        cp coverage.tar afacts/
+        cp UT/UT_acp.log afacts/
+
+    # copy the build artifacts to artifacts location
+    - uses: actions/upload-artifact@v4
+      with:
+        name: coverage_report
+        path: /home/runner/work/device-client/device-client/client/Reports/afacts
+
+     
+    #- name: make check
+    #  run: make check
+   # - name: make distcheck
+   #   run: make distcheck
